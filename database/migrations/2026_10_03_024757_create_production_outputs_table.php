@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('production_outputs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('production_batch_id')->constrained('production_batches')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+            $table->decimal('quantity', 12, 2);
             $table->timestamps();
         });
     }

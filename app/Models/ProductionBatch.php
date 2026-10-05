@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductionBatchFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,6 +22,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 ])]
 class ProductionBatch extends Model
 {
+    /** @use HasFactory<ProductionBatchFactory> */
+    use HasFactory;
+
     /**
      * Get the attributes that should be cast.
      *

@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('production_batches', function (Blueprint $table) {
             $table->id();
+            $table->string('batch_number')->unique();
+            $table->foreignId('raw_product_id')->constrained('products')->cascadeOnDelete();
+            $table->decimal('input_quantity', 12, 2);
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->string('status')->default('pending');
+            $table->text('remarks')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

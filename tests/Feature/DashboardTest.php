@@ -2,9 +2,12 @@
 
 use App\Enums\ProductType;
 use App\Models\Customer;
+use App\Models\PaddyPurchase;
 use App\Models\Product;
 use App\Models\ProductionBatch;
 use App\Models\Sale;
+use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -23,6 +26,18 @@ test('dashboard displays current rice mill data', function () {
         'paid_amount' => 25000,
         'payment_status' => 'partial',
     ]);
+    $rawPaddy = Product::factory()->create([
+        'name' => 'Harvest Paddy',
+        'type' => ProductType::RawMaterial,
+        'current_stock' => 250,
+    ]);
+    PaddyPurchase::factory()->for(Supplier::factory())->for($rawPaddy)->create([
+        'purchase_number' => 'PUR-20261001',
+        'purchase_date' => now()->toDateString(),
+        'quantity' => 250,
+        'unit_price' => 10,
+        'total_amount' => 2500,
+    ]);
     ProductionBatch::factory()->create([
         'raw_product_id' => $product->id,
         'batch_number' => 'BATCH-20261001',
@@ -39,12 +54,14 @@ test('dashboard displays current rice mill data', function () {
         'status' => 'cancelled',
     ]);
 
-    $this->get('/')
+    $this->actingAs(User::factory()->create())->get('/')
         ->assertOk()
         ->assertSee('Operations overview')
         ->assertSee('125,000')
         ->assertSee('INV-20261001')
         ->assertSee('Mya Thida')
+        ->assertSee('Recent paddy purchases')
+        ->assertSee('PUR-20261001')
         ->assertSee('640.00')
         ->assertSee('BATCH-20261001')
         ->assertDontSee('BATCH-20261002')

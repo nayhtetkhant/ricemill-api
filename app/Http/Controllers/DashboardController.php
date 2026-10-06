@@ -32,6 +32,12 @@ class DashboardController extends Controller
                 ->latest('sale_date')
                 ->limit(6)
                 ->get(),
+            'recentPurchases' => PaddyPurchase::query()
+                ->with(['supplier:id,name', 'product:id,name,unit'])
+                ->latest('purchase_date')
+                ->latest('id')
+                ->limit(5)
+                ->get(),
             'stockProducts' => Product::query()
                 ->orderBy('current_stock')
                 ->limit(6)
